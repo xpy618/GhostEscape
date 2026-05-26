@@ -1,0 +1,223 @@
+#include "game.h"
+#include "../scene_main.h"
+#include "object_screen.h"
+#include "object_world.h"
+#include "actor.h"
+#include "../affiliate/sprite.h"
+
+void Game::run()
+{
+    while(is_running_){
+        auto start = SDL_GetTicksNS();
+        handleEvent();
+        update(dt_);
+        render();
+        auto end = SDL_GetTicksNS();
+        auto elapased = end - start;
+        if (elapased < frame_delay_){
+            SDL_DelayNS(frame_delay_ - elapased);
+            dt_ = frame_delay_ / 1.0e9f;
+        }else{
+            dt_ = elapased / 1.0e9f;
+        }
+    }
+}
+
+void Game::init(std::string title, int width, int height)
+{
+    screen_size_ = glm::vec2(width, height);
+    //SDL3初始化
+    if (!SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO)){
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "SDL_Init Error: %s", SDL_GetError());
+    }
+
+    //不需要SDL_image初始化
+
+    //SDL_Mixer初始化
+    if (Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG) != (MIX_INIT_MP3 | MIX_INIT_OGG)){
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Mix_Init Error: %s", SDL_GetError());
+    }
+    if (!Mix_OpenAudio(0, NULL)){
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Mix_OpenAudio Error: %s", SDL_GetError());//打开音频设备
+    }
+    Mix_AllocateChannels(16);
+    Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
+    Mix_Volume(-1, MIX_MAX_VOLUME / 4);
+
+    //SDL_TTF初始化
+    if (!TTF_Init()){
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "TTF_Init Error: %s", SDL_GetError());
+    }
+
+    //创建窗口与渲染器
+    SDL_CreateWindowAndRenderer(title.c_str(), width, height, SDL_WINDOW_RESIZABLE, &window_, &renderer_);
+    if (!window_ || !renderer_){
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "SDL_CreateWindowAndRenderer Error: %s", SDL_GetError());
+    }
+
+    //设置窗口逻辑分辨率
+    SDL_SetRenderLogicalPresentation(renderer_, width, height, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+
+    ttf_engine_ = TTF_CreateRendererTextEngine(renderer_);
+
+    //计算帧延迟
+    frame_delay_ = 1000000000 / FPS_;
+
+    //创建资源管理器
+    asset_store_ = new AssetStore(renderer_);
+
+    //创建场景
+    current_scene_ = new SceneMain();
+    current_scene_->init();
+}
+
+void Game::handleEvent()
+{
+    SDL_Event event;
+    while (SDL_PollEvent(&event)){
+        switch (event.type){
+        case SDL_EVENT_QUIT:
+            is_running_ = false;
+            break;
+        default:
+            current_scene_->handleEvents(event);
+        }
+    }
+}
+
+void Game::update(float dt)
+{
+    mouse_button_ = SDL_GetMouseState(&mouse_pos_.x, &mouse_pos_.y);
+    current_scene_->update(dt);
+}
+
+void Game::render()
+{
+    SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
+    SDL_RenderClear(renderer_);
+    current_scene_->render();
+    SDL_RenderPresent(renderer_);
+}
+
+void Game::clean()
+{
+    if (current_scene_){
+        current_scene_->clean();
+        delete current_scene_;
+    }
+
+    if (asset_store_){
+        asset_store_->clean();
+        delete asset_store_;
+    }
+
+    if (ttf_engine_){
+        TTF_DestroyRendererTextEngine(ttf_engine_);
+    }
+
+    if (renderer_){
+        SDL_DestroyRenderer(renderer_);
+    }
+    if (window_){
+        SDL_DestroyWindow(window_);
+    }
+    Mix_CloseAudio();
+    Mix_Quit();
+    TTF_Quit();
+    SDL_Quit();
+}
+
+void Game::setScore(int score)
+{
+    score_ = score;
+    if (score_ > high_score_){
+        high_score_ = score_;
+    }
+}
+
+void Game::addScore(int score)
+{
+    setScore(score_ + score);
+}
+
+void Game::renderTexture(const Texture &texture, const glm::vec2 &position, const glm::vec2 &size, const glm::vec2 &mask)
+{   
+    SDL_FRect src_rect = {  //贴图自身裁切
+        texture.src_rect.x,
+        texture.src_rect.y + texture.src_rect.h * (1-mask.y),
+        texture.src_rect.w * mask.x,
+        texture.src_rect.h * mask.y
+    };
+    SDL_FRect dst_rect = {  //外部传入的显示尺寸
+        position.x,
+        position.y + size.y * (1-mask.y),
+        size.x * mask.x,
+        size.y * mask.y
+    };
+    SDL_RenderTextureRotated(renderer_, texture.texture, &src_rect, &dst_rect, texture.angle, nullptr, texture.is_flip ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
+}
+
+void Game::renderFillCircle(const glm::vec2 &position, const glm::vec2 &size, float alpha)
+{
+    auto texture = asset_store_->getImage("assets/UI/circle.png");
+    SDL_FRect dst_rect = {
+        position.x,
+        position.y,
+        size.x,
+        size.y
+    };
+    SDL_SetTextureAlphaModFloat(texture, alpha);
+    SDL_RenderTexture(renderer_, texture, nullptr, &dst_rect);
+}
+
+void Game::renderHBar(const glm::vec2 &position, const glm::vec2 &size, float percent, SDL_FColor color)
+{
+    SDL_SetRenderDrawColorFloat(renderer_, color.r, color.g, color.b, color.a); //红绿蓝透明度
+    SDL_FRect boundary_rect = {
+        position.x,
+        position.y,
+        size.x,
+        size.y
+    };
+    SDL_FRect fill_rect = {
+        position.x,
+        position.y,
+        size.x * percent,
+        size.y
+    };
+    SDL_RenderRect(renderer_, &boundary_rect);
+    SDL_RenderFillRect(renderer_, &fill_rect);
+    SDL_SetRenderDrawColorFloat(renderer_, 0, 0, 0, 1);
+}
+
+TTF_Text *Game::createTTF_Text(const std::string &text, const std::string &font_path, int font_size)
+{
+    auto font = asset_store_->getFont(font_path, font_size);
+    return TTF_CreateText(ttf_engine_, font, text.c_str(), 0);
+}
+
+void Game::drawGrid(const glm::vec2 &top_left, const glm::vec2 bottom_right, float grid_size, SDL_FColor fcolor)
+{
+    SDL_SetRenderDrawColorFloat(renderer_, fcolor.r, fcolor.g, fcolor.b, fcolor.a);
+    for (float i = top_left.x; i < bottom_right.x; i += grid_size){
+        SDL_RenderLine(renderer_, i, top_left.y, i, bottom_right.y); //SDL_RenderLine(渲染器, 起点x, 起点y, 终点x, 终点y);
+    }
+    for (float i = top_left.y; i < bottom_right.y; i += grid_size){
+        SDL_RenderLine(renderer_, top_left.x, i, bottom_right.x, i);
+    }
+    SDL_SetRenderDrawColorFloat(renderer_, 0, 0, 0, 1);
+}
+
+void Game::drawBoundary(const glm::vec2 &top_left, const glm::vec2 bottom_right, float boundary_size, SDL_FColor fcolor)
+{
+    SDL_SetRenderDrawColorFloat(renderer_, fcolor.r, fcolor.g, fcolor.b, fcolor.a);
+    for (float i =0; i < boundary_size; i++){
+        SDL_FRect rect = {
+            top_left.x - i,  //左上角x
+            top_left.y - i,  //左上角y
+            bottom_right.x - top_left.x + 2 * i,  //宽度
+            bottom_right.y - top_left.y + 2 * i};  //高度
+        SDL_RenderRect(renderer_, &rect);
+    }
+    SDL_SetRenderDrawColorFloat(renderer_, 0, 0, 0, 1);
+}
