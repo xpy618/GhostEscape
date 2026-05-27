@@ -66,6 +66,17 @@ public:
     void setHighScore(int high_score) { high_score_ = high_score;}
 
     void addScore(int score);
+    void quit() { is_running_ = false; }
+
+    //音频函数
+    void playMusic(const std::string& music_path, bool loop = true) { Mix_PlayMusic(asset_store_->getMusic(music_path), loop ? -1 : 0); }
+    void playSound(const std::string& sound_path) { Mix_PlayChannel(-1, asset_store_->getSound(sound_path), 0); }
+    void stopMusic() { Mix_HaltMusic(); }
+    void stopSound() { Mix_HaltChannel(-1); }
+    void pauseMusic() { Mix_PauseMusic(); }
+    void pauseSound() { Mix_Pause(-1); }
+    void resumeMusic() { Mix_ResumeMusic(); }
+    void resumeSound() { Mix_Resume(-1); }
 
     //随机数
     float randomFloat(float min, float max) { return std::uniform_real_distribution<float>(min, max)(gen_); }
@@ -77,13 +88,15 @@ public:
     void renderTexture(const Texture& texture, const glm::vec2& position, const glm::vec2& size, const glm::vec2 &mask = glm::vec2(1.0f));
     void renderFillCircle(const glm::vec2& position, const glm::vec2& size, float alpha);
     void renderHBar(const glm::vec2& position, const glm::vec2& size, float percent, SDL_FColor color);
+    void drawGrid(const glm::vec2& top_left, const glm::vec2 bottom_right, float grid_size, SDL_FColor fcolor);
+    void drawBoundary(const glm::vec2& top_left, const glm::vec2 bottom_right, float boundary_size, SDL_FColor fcolor);
 
     //文字函数
     TTF_Text* createTTF_Text(const std::string& text, const std::string& font_path, int font_size = 16);
 
     //工具函数
-    void drawGrid(const glm::vec2& top_left, const glm::vec2 bottom_right, float grid_size, SDL_FColor fcolor);
-    void drawBoundary(const glm::vec2& top_left, const glm::vec2 bottom_right, float boundary_size, SDL_FColor fcolor);
+    bool isMouseInRect(const glm::vec2& top_left, const glm::vec2& bottom_right);
+
 };
 
 #endif // GAME_H

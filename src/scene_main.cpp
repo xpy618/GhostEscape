@@ -11,6 +11,7 @@
 void SceneMain::init()
 {
     SDL_HideCursor();
+    game.playMusic("assets/bgm/OhMyGhost.ogg");
     world_size_ = game.getScreenSize() * 3.0f;
     camera_position_ = world_size_ / 2.0f - game.getScreenSize() / 2.0f;
     player_ = new Player();
