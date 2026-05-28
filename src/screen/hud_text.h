@@ -14,6 +14,7 @@ protected:
 public:
     static HUDText* addHUDTextChild(Object *parent, const std::string &text, glm::vec2 render_pos, glm::vec2 size , const std::string &font_path = "assets/font/VonwaonBitmap-16px.ttf", int font_size = 20, const std::string &bg_path = "assets/UI/Textfield_01.png", Anchor anchor = Anchor::CENTER);
 
+    void setBgSizeByText(float margin = 50.0f);
     //getters and setters
     TextLabel *getTextLabel() { return text_label_; }
     void setTextLabel(TextLabel *text_label) { text_label_ = text_label; }  //使用哪个文字框

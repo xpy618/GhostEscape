@@ -19,7 +19,7 @@ public:
     void setFont(const std::string& font_path, int font_size);
     void setFontPath(std::string font_path);
     void setFontSize(int font_size);
-    void setText(std::string ttf_text) { TTF_SetTextString (ttf_text_, ttf_text.c_str(), 0); }
+    void setText(std::string ttf_text);
     std::string getText() const { return ttf_text_->text; }
 
 private:

@@ -5,10 +5,15 @@
 #include "object_world.h"
 #include "actor.h"
 #include "../affiliate/sprite.h"
+#include <fstream>
 
 void Game::run()
 {
     while(is_running_){
+        if(next_scene_){
+            changeScene(next_scene_);
+            next_scene_ = nullptr;
+        }
         auto start = SDL_GetTicksNS();
         handleEvent();
         update(dt_);
@@ -141,6 +146,16 @@ void Game::addScore(int score)
     setScore(score_ + score);
 }
 
+void Game::changeScene(Scene *scene)
+{
+    if (current_scene_){
+        current_scene_->clean();
+        delete current_scene_;
+    }
+    current_scene_ = scene;
+    current_scene_->init();
+}
+
 void Game::renderTexture(const Texture &texture, const glm::vec2 &position, const glm::vec2 &size, const glm::vec2 &mask)
 {   
     SDL_FRect src_rect = {  //贴图自身裁切
@@ -203,6 +218,17 @@ bool Game::isMouseInRect(const glm::vec2 &top_left, const glm::vec2 &bottom_righ
         return true;
     }
     return false;
+}
+
+std::string Game::loadTextFile(const std::string &path)
+{
+    std::ifstream file(path);
+    std::string text;
+    std::string line;
+    while (std::getline(file, line)){
+        text += line + "\n";
+    }
+    return text;
 }
 
 void Game::drawGrid(const glm::vec2 &top_left, const glm::vec2 bottom_right, float grid_size, SDL_FColor fcolor)

@@ -22,6 +22,7 @@ class Game
     
     bool is_running_ = true;
     Scene* current_scene_ = nullptr; //当前场景
+    Scene* next_scene_ = nullptr; //下一个场景
 
     Uint64 FPS_ = 60;
     Uint64 frame_delay_ = 0; //帧延迟
@@ -67,6 +68,8 @@ public:
 
     void addScore(int score);
     void quit() { is_running_ = false; }
+    void changeScene(Scene* scene);
+    void safeChangeScene(Scene* scene){ next_scene_ = scene; }
 
     //音频函数
     void playMusic(const std::string& music_path, bool loop = true) { Mix_PlayMusic(asset_store_->getMusic(music_path), loop ? -1 : 0); }
@@ -96,6 +99,7 @@ public:
 
     //工具函数
     bool isMouseInRect(const glm::vec2& top_left, const glm::vec2& bottom_right);
+    std::string loadTextFile(const std::string& file_path);
 
 };
 
