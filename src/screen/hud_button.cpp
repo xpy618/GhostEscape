@@ -15,13 +15,14 @@ HUDButton *HUDButton::addHUDButtonChild(Object *parent, glm::vec2 render_pos, co
     return hud_button;
 }
 
-void HUDButton::handleEvents(SDL_Event &event)
+bool HUDButton::handleEvents(SDL_Event &event)
 {
     if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN){
         if (event.button.button == SDL_BUTTON_LEFT){
             if (is_hover_){
                 is_press_ = true;
                 game.playSound("assets/sound/UI_button08.wav");
+                return true;
             }
         }
     }else if (event.type == SDL_EVENT_MOUSE_BUTTON_UP){
@@ -29,9 +30,11 @@ void HUDButton::handleEvents(SDL_Event &event)
             is_press_ = false;
             if (is_hover_){
                 is_trigger_ = true;  //在按钮内按下并松开鼠标才触发
+                return true;
             }
         }
     }
+    return false;
 }
 
 void HUDButton::update(float)
@@ -80,4 +83,11 @@ bool HUDButton::getIsTrigger()
         return true;
     }
     return false;
+}
+
+void HUDButton::setScale(float scale)
+{
+    sprite_normal_->setScale(scale);
+    sprite_hover_->setScale(scale);
+    sprite_press_->setScale(scale);
 }

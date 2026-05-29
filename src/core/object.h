@@ -18,7 +18,7 @@ public:
     virtual ~Object() = default;   //所有的类，不在构造函数和析构函数中做任何事
 
     virtual void init() {}   //需要初始化，在init中做
-    virtual void handleEvents(SDL_Event& event);
+    virtual bool handleEvents(SDL_Event& event);
     virtual void update(float dt);
     virtual void render();
     virtual void clean();  //需要清理，在clean中做

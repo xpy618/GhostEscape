@@ -1,22 +1,25 @@
 #include "scene.h"
 
-void Scene::handleEvents(SDL_Event & event)
+bool Scene::handleEvents(SDL_Event & event)
 {
-    Object::handleEvents(event);
-    for (auto &child : children_screen_) {
+    for (auto &child : children_screen_) {  //案件处理时，优先检测屏幕UI层元素
         if (child->getActive()){
-            child->handleEvents(event);
+            if(child->handleEvents(event)) return true;
         }
     }
+    if (is_pause_) return false;   //暂停，只有screen容器执行
+    Object::handleEvents(event);
     for (auto &child : children_world_) {
         if (child->getActive()){
-            child->handleEvents(event);
+            if(child->handleEvents(event)) return true;
         }
     }
+    return false;
 }
 
 void Scene::update(float dt)
 {
+    if (!is_pause_){
     Object::update(dt);
     for (auto it = children_world_.begin(); it != children_world_.end();) {
         auto child = *it;
@@ -31,6 +34,7 @@ void Scene::update(float dt)
             } 
              ++it;
         }
+    }
     }
     for (auto it = children_screen_.begin(); it != children_screen_.end();) {
         auto child = *it;
@@ -106,6 +110,21 @@ void Scene::removeChild(Object *child)
             children_.erase(std::remove(children_.begin(), children_.end(), child), children_.end());
             break;
     }
+}
+
+void Scene::pause()
+{
+    is_pause_ = true;
+    game.pauseMusic();
+    game.pauseSound();
+}
+
+void Scene::resume()
+{
+    is_pause_ = false;
+    game.resumeMusic();
+    game.resumeSound();
+
 }
 
 void Scene::setCameraPosition(glm::vec2 camera_position)

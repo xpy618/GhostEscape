@@ -3,11 +3,14 @@
 #include "affiliate/sprite_anim.h"
 #include "affiliate/collider.h"
 #include "raw/stats.h"
+#include "raw/timer.h"
 #include "affiliate/text_label.h"
 
 void Player::init()
 {
     Actor::init();
+    flash_timer_ = Timer::addTimerChild(this, 0.2f);
+    flash_timer_->start();
     max_speed_ = 500.0f;
     sprite_idle_ = SpriteAnim::addSpriteAnimChild(this, "assets/sprite/ghost-idle.png", 2.0f);
     sprite_move_ = SpriteAnim::addSpriteAnimChild(this, "assets/sprite/ghost-move.png", 2.0f);
@@ -20,9 +23,10 @@ void Player::init()
     //TextLabel::addTextLabelChild(this, "老毛", "assets/font/VonwaonBitmap-16px.ttf", 16);
 }
 
-void Player::handleEvents(SDL_Event& event)
+bool Player::handleEvents(SDL_Event& event)
 {
-    Actor::handleEvents(event);
+    if(Actor::handleEvents(event)) return true;
+    return false;
 }
 
 void Player::update(float dt)
@@ -37,6 +41,7 @@ void Player::update(float dt)
 
 void Player::render()
 {
+    if (stats_->getInvincible() && flash_timer_->getProgress() < 0.5f) return;
     Actor::render();
 }
 
