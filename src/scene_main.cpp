@@ -10,6 +10,8 @@
 #include "world/spell.h"
 #include "world/effect.h"
 #include "raw/timer.h"
+#include "raw/bg_star.h"
+#include <fstream>
 
 void SceneMain::init()
 {
@@ -22,6 +24,8 @@ void SceneMain::init()
     player_->init();
     player_->setPosition(world_size_ / 2.0f);
     addChild(player_);
+
+    BgStar::addBgStarChild(this, 2000, 0.2f, 0.5f, 0.8f);
 
     end_timer_ = Timer::addTimerChild(this);
 
@@ -53,7 +57,10 @@ void SceneMain::update(float dt)
     checkButtonPause();
     checkButtonRestart();
     checkButtonBack();
-    if(player_ && !player_->getActive()) end_timer_->start();
+    if(player_ && !player_->getActive()){
+        end_timer_->start();
+        saveData("assets/score.dat");
+    }
     checkEndTimer();
 }
 
@@ -67,6 +74,15 @@ void SceneMain::clean()
 {
     Scene::clean();
 }
+
+void SceneMain::saveData(const std::string &file_path)
+{
+    auto score = game.getHighScore();
+    std::ofstream file(file_path, std::ios::binary);  //将数据从内存写入文件
+    if (!file.is_open()) return;
+    file.write(reinterpret_cast<const char*>(&score), sizeof(score));  //将所有数据类型改为字符类型，（字符，长度）
+    file.close();
+}   
 
 void SceneMain::renderBackground()
 {
@@ -93,6 +109,7 @@ void SceneMain::checkButtonRestart()
 {
     if (button_restart_->getIsTrigger())
     {
+        saveData("assets/score.dat");
         game.setScore(0);
         auto scene = new SceneMain();        
         game.safeChangeScene(scene);
@@ -103,6 +120,7 @@ void SceneMain::checkButtonBack()
 {
     if (button_back_->getIsTrigger())
     {
+        saveData("assets/score.dat");
         game.setScore(0);
         auto scene = new SceneTitle();
         game.safeChangeScene(scene);

@@ -93,6 +93,7 @@ public:
     void renderHBar(const glm::vec2& position, const glm::vec2& size, float percent, SDL_FColor color);
     void drawGrid(const glm::vec2& top_left, const glm::vec2 bottom_right, float grid_size, SDL_FColor fcolor);
     void drawBoundary(const glm::vec2& top_left, const glm::vec2 bottom_right, float boundary_size, SDL_FColor fcolor);
+    void drawPoints(const std::vector<glm::vec2>& points, glm::vec2 render_pos, SDL_FColor fcolor);
 
     //文字函数
     TTF_Text* createTTF_Text(const std::string& text, const std::string& font_path, int font_size = 16);

@@ -19,7 +19,7 @@ void Timer::update(float dt)
     }  
 }
 
-bool Timer::timerOut()
+bool Timer::timerOut()  //并不会中断循环，只是在一个循环结束后发出信号
 {
     if (timer_out_){
         timer_out_ = false;

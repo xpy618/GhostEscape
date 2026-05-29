@@ -256,3 +256,12 @@ void Game::drawBoundary(const glm::vec2 &top_left, const glm::vec2 bottom_right,
     }
     SDL_SetRenderDrawColorFloat(renderer_, 0, 0, 0, 1);
 }
+
+void Game::drawPoints(const std::vector<glm::vec2> &points, glm::vec2 render_pos, SDL_FColor fcolor)
+{
+    SDL_SetRenderDrawColorFloat(renderer_, fcolor.r, fcolor.g, fcolor.b, fcolor.a);
+    for (auto point : points){      
+        SDL_RenderPoint(renderer_, point.x + render_pos.x, point.y + render_pos.y);
+    }
+    SDL_SetRenderDrawColorFloat(renderer_, 0, 0, 0, 1);
+}
