@@ -26,7 +26,7 @@ void SceneTitle::init()
     credits_text_->setBgSizeByText();
     credits_text_->setActive(false);
 
-    UIMouse::addUIMouseChild(this,"assets/UI/pointer_c_shaded.png", "assets/UI/pointer_c_shaded.png", 1.0, Anchor::TOP_LEFT);
+    ui_mouse_ = UIMouse::addUIMouseChild(this,"assets/UI/pointer_c_shaded.png", "assets/UI/pointer_c_shaded.png", 1.0, Anchor::TOP_LEFT);
 }
 
 bool SceneTitle::handleEvents(SDL_Event &event)
@@ -45,7 +45,10 @@ void SceneTitle::update(float dt)
 {
     color_timer_ += dt;
     updateColor();
-    if (credits_text_->getActive()) return;
+    if (credits_text_->getActive()){
+        ui_mouse_->update(dt);
+        return;
+    }
     Scene::update(dt);
     checkButtonQuit();
     checkButtonStart();

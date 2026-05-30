@@ -46,6 +46,8 @@ void Object::clean()
 {
     for (auto& child : children_){
         child->clean();
+        delete child;
+        child = nullptr;
     }
     children_.clear();
 }

@@ -131,7 +131,7 @@ void SceneMain::checkButtonBack()
 void SceneMain::checkEndTimer()
 {
     if (!end_timer_->timerOut()) return;
-    pause();
+    //pause();
     button_restart_->setRenderPosition(game.getScreenSize() / 2.0f - glm::vec2(200.0f, 0.0f));
     button_restart_->setScale(3.5f);
     button_back_->setRenderPosition(game.getScreenSize() / 2.0f + glm::vec2(200.0f, 0.0f));
