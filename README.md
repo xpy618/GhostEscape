@@ -25,6 +25,6 @@ cmake --build build
 
 ## 项目概述
 
-![截图1](docs/images/screenshot-1.png)
+![1](docs/images/screenshot-1.png)
 
-![截图2](docs/images/screenshot-2.png)
+![2](docs/images/screenshot-2.png)
