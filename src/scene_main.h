@@ -42,6 +42,7 @@ private:
     void checkButtonRestart();
     void checkButtonBack();
     void checkEndTimer();
+    void checkTimeManage(float &dt);  //因为要修改dt，所以需要传引用
 };
 
 #endif // SCENE_MAIN_H

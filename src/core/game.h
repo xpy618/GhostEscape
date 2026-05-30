@@ -60,7 +60,7 @@ public:
     Scene* getCurrentScene() const { return current_scene_;}
     AssetStore* getAssetStore() const { return asset_store_;}
     glm::vec2 getMousePosition() const { return mouse_pos_;}
-    SDL_MouseButtonFlags getMouseButton() const { return mouse_button_;}
+    SDL_MouseButtonFlags getMouseButtons() const { return mouse_button_;}
     int getScore() const { return score_;}
     int getHighScore() const { return high_score_;}
     void setScore(int score);
@@ -101,6 +101,9 @@ public:
     //工具函数
     bool isMouseInRect(const glm::vec2& top_left, const glm::vec2& bottom_right);
     std::string loadTextFile(const std::string& file_path);
+
+private:
+    void updateMouse();
 
 };
 

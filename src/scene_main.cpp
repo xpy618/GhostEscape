@@ -52,6 +52,7 @@ bool SceneMain::handleEvents(SDL_Event& event)
 
 void SceneMain::update(float dt)
 {
+    checkTimeManage(dt);  //必修在update的开头
     Scene::update(dt);
     updateScore();
     checkButtonPause();
@@ -137,4 +138,14 @@ void SceneMain::checkEndTimer()
     button_back_->setScale(3.5f);
     button_pause_->setActive(false);
     end_timer_->stop();
+}
+
+void SceneMain::checkTimeManage(float &dt)
+{
+    if (game.getMouseButtons() & SDL_BUTTON_X2MASK){
+        dt *= 0.1f;
+    }
+    if (game.getMouseButtons() & SDL_BUTTON_X1MASK){
+        dt *= 2.0f;
+    }
 }
