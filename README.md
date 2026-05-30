@@ -23,7 +23,7 @@ cmake --build build
 
 构建产物输出到项目根目录。
 
-## 游戏截图
+## 项目概述
 
 ![截图1](docs/images/screenshot-1.png)
 
