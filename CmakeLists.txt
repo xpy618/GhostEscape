@@ -57,7 +57,9 @@ add_executable(${TARGET}
                 src/core/object.cpp
                 src/core/object_affiliate.cpp
                 src/core/game.cpp
-                src/core/object_world.cpp)
+                src/core/object_world.cpp
+                resources.rc
+                )
 
 # 链接库
 target_link_libraries(${TARGET}
@@ -67,3 +69,7 @@ target_link_libraries(${TARGET}
                         SDL3_ttf::SDL3_ttf
                         glm::glm
                         )
+
+if(MSVC)
+    target_link_options(${TARGET} PRIVATE "/SUBSYSTEM:WINDOWS")
+endif()

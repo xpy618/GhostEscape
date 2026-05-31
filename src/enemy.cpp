@@ -16,9 +16,9 @@ Enemy *Enemy::addEnemyChild(ObjectScreen *parent, glm::vec2 pos, Player *target)
 void Enemy::init()
 {
     Actor::init();
-    anim_normal_ = SpriteAnim::addSpriteAnimChild(this, "assets/sprite/ghost-Sheet.png", 2.0f);
-    anim_hurt_ = SpriteAnim::addSpriteAnimChild(this, "assets/sprite/ghostHurt-Sheet.png", 2.0f);
-    anim_die_ = SpriteAnim::addSpriteAnimChild(this, "assets/sprite/ghostDead-Sheet.png", 2.0f);
+    anim_normal_ = SpriteAnim::addSpriteAnimChild(this, "assets/sprite/poopCute-Sheet.png", 3.0f);
+    anim_hurt_ = SpriteAnim::addSpriteAnimChild(this, "assets/sprite/poopCuteDead-Sheet.png", 3.0f);
+    anim_die_ = SpriteAnim::addSpriteAnimChild(this, "assets/sprite/poopCuteDead-Sheet.png", 3.0f);
     anim_hurt_->setActive(false);
     anim_die_->setActive(false);
     anim_die_->setLoop(false);

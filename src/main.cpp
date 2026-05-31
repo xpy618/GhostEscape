@@ -1,3 +1,4 @@
+#include <SDL3/SDL_main.h>
 #include "core/game.h"
 
 int main(int, char**) {

@@ -18,7 +18,8 @@ void Player::init()
 
     collider_ = Collider::addColliderChild(this, sprite_idle_->getSize()/2.0f);
     stats_ = Stats::addStatsChild(this);
-    effect_ = Effect::addEffectChild(nullptr, "assets/effect/1764.png", glm::vec2(0), 2.0f);
+    effect_ = Effect::addEffectChild(game.getCurrentScene(), "assets/effect/1764.png", glm::vec2(0), 2.0f);
+    effect_->setActive(false);
     weapon_thunder_ = WeaponThunder::addWeaponThunderChild(this, 2.0f, 40.0f);
     //TextLabel::addTextLabelChild(this, "老毛", "assets/font/VonwaonBitmap-16px.ttf", 16);
 }
@@ -121,7 +122,7 @@ void Player::changeState(bool is_moving)
 void Player::checkIsDead()
 {
     if (!stats_->getIsAlive()){
-        game.getCurrentScene()->safeAddChild(effect_);
+        effect_->setActive(true);
         effect_->setPosition(position_);
         setActive(false);
         game.playSound("assets/sound/female-scream-02-89290.mp3");
