@@ -2,8 +2,7 @@
 #include "core/game.h"
 
 int main(int, char**) {
-    auto& game = Game::GetInstance();
-    game.init("GhostEscape", 1280, 720);
-    game.run();
+    Game::getInstance().init("GhostEscape", 1280, 720);
+    Game::getInstance().run();
     return 0;
 }

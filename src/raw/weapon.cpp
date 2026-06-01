@@ -17,7 +17,7 @@ void Weapon::attack(glm::vec2 position, Spell* spell)
     parent_->getStats()->useMana(mana_cost_);
     cool_down_timer_ = 0.0f;
     spell->setPosition(position);
-    game.getCurrentScene()->safeAddChild(spell); //因为是游戏运行时添加的，所以必须使用safeaddchild
+    Game::getInstance().getCurrentScene()->safeAddChild(spell); //因为是游戏运行时添加的，所以必须使用safeaddchild
     
 }
 

@@ -42,9 +42,9 @@ class Game
     Game& operator=(const Game&) = delete;
 
 public:
-    static Game& GetInstance()
+    static Game& getInstance()  //提供全局调用入口
     {
-        static Game instance;
+        static Game instance;  //保证实例唯一，懒加载，常驻内存
         return instance;
     }
 

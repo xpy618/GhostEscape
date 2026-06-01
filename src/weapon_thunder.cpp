@@ -6,8 +6,8 @@
 void WeaponThunder::init()
 {
     Weapon::init();
-    auto scene = game.getCurrentScene();
-    auto pos = glm::vec2(game.getScreenSize().x - 300, 30);
+    auto scene = Game::getInstance().getCurrentScene();
+    auto pos = glm::vec2(Game::getInstance().getScreenSize().x - 300, 30);
     hud_skill_ = HUDSkill::addHUDSkillChild(scene, "assets/UI/Electric-Icon.png", pos, 0.14f, Anchor::CENTER);
 }
 
@@ -36,8 +36,8 @@ bool WeaponThunder::handleEvents(SDL_Event &event)
     if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN){
         if (event.button.button == SDL_BUTTON_LEFT){
             if(canAttack()){
-                game.playSound("assets/sound/big-thunder.mp3");
-                auto pos = game.getMousePosition() + game.getCurrentScene()->getCameraPosition();
+                Game::getInstance().playSound("assets/sound/big-thunder.mp3");
+                auto pos = Game::getInstance().getMousePosition() + Game::getInstance().getCurrentScene()->getCameraPosition();
                 auto spell = Spell::addSpellChild(nullptr,"assets/effect/Thunderstrike w blur.png",pos,40.0f, 3.0f, Anchor::CENTER);
                 attack(pos, spell);
                 return true;
