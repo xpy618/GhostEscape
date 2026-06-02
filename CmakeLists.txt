@@ -35,11 +35,14 @@ add_executable(${TARGET}
                 src/enemy.cpp
                 src/spawner.cpp
                 src/weapon_thunder.cpp
+                src/move_control_wasd.cpp
+                src/move_control_arrow.cpp
                 src/screen/ui_mouse.cpp
                 src/screen/hud_stats.cpp
                 src/screen/hud_skill.cpp
                 src/screen/hud_text.cpp
                 src/screen/hud_button.cpp
+                src/raw/move_control.cpp
                 src/raw/stats.cpp
                 src/raw/weapon.cpp
                 src/raw/timer.cpp

@@ -5,6 +5,8 @@
 #include "raw/stats.h"
 #include "raw/timer.h"
 #include "affiliate/text_label.h"
+#include "move_control_arrow.h"
+#include "move_control_wasd.h"
 
 void Player::init()
 {
@@ -22,18 +24,27 @@ void Player::init()
     effect_->setActive(false);
     weapon_thunder_ = WeaponThunder::addWeaponThunderChild(this, 2.0f, 40.0f);
     //TextLabel::addTextLabelChild(this, "老毛", "assets/font/VonwaonBitmap-16px.ttf", 16);
+
+    move_control_ = new MoveControlWASD();
+    addChild(move_control_);
 }
 
 bool Player::handleEvents(SDL_Event& event)
 {
     if(Actor::handleEvents(event)) return true;
+    //按c键切换WASD,按v键切换方向键
+    if (event.type == SDL_EVENT_KEY_DOWN){
+        if (event.key.scancode == SDL_SCANCODE_C) setMoveControl(new MoveControlWASD());
+        else if (event.key.scancode == SDL_SCANCODE_V) setMoveControl(new MoveControlArrow());
+        return true;
+    }
     return false;
 }
 
 void Player::update(float dt)
 {
    Actor::update(dt);
-   keyboardControl(); 
+   moveControl(); 
    checkState();
    move(dt);
    synCamera();
@@ -58,29 +69,37 @@ void Player::takeDamage(float damage)
     Game::getInstance().playSound("assets/sound/hit-flesh-02-266309.mp3");
 }
 
-void Player::keyboardControl()
-{
-    auto currentKeyStates = SDL_GetKeyboardState(NULL);
-
+void Player::moveControl()
+{   
+    if (!move_control_) return;
     velocity_ *= 0.9f; //惯性减速
 
-    if (currentKeyStates[SDL_SCANCODE_W])
+    if (move_control_->getUp())
     {
         velocity_.y = -max_speed_;
     }
-    if (currentKeyStates[SDL_SCANCODE_S])
+    if (move_control_->getDown())
     {
         velocity_.y = max_speed_;
     }
-    if (currentKeyStates[SDL_SCANCODE_A])
+    if (move_control_->getLeft())
     {
         velocity_.x = -max_speed_;
     }
-    if (currentKeyStates[SDL_SCANCODE_D])
+    if (move_control_->getRight())
     {
         velocity_.x = max_speed_;
     }
 
+}
+
+void Player::setMoveControl(MoveControl *move_control)
+{
+    if (move_control_){
+        move_control_->setNeedRemove(true);  //一次只有一个操作系统
+    }
+    move_control_ = move_control;
+    safeAddChild(move_control_);
 }
 
 void Player::synCamera()
