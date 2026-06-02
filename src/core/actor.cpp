@@ -22,6 +22,23 @@ void Actor::takeDamage(float damage)
     }
 }
 
+void Actor::removeMoveControl()
+{
+    if( !move_control_ ) return;
+    move_control_->setNeedRemove(true);
+    move_control_ = nullptr;
+}
+
+void Actor::setMoveControl(MoveControl *move_control)
+{
+    if (move_control_){
+        move_control_->setNeedRemove(true);
+    }
+    move_control_ = move_control;
+    move_control_->setParent(this);  //有疑问
+    safeAddChild(move_control_);
+}
+
 bool Actor::getIsAlive()
 {
     if (!stats_) return true;

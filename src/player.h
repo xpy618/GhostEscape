@@ -11,7 +11,6 @@ class Timer;
 class Player : public Actor
 {
     WeaponThunder* weapon_thunder_ = nullptr;
-    MoveControl* move_control_ = nullptr;
     SpriteAnim* sprite_idle_ = nullptr;
     SpriteAnim* sprite_move_ = nullptr;
     Effect* effect_ = nullptr;  //player要保存成员变量是因为，特效在player死亡后调用，enemy是在创建之前
@@ -26,9 +25,8 @@ public:
 
     virtual void takeDamage (float damage) override;
 
-    void moveControl ();
-    void setMoveControl(MoveControl* move_control);
-
+private:
+    void autoEscape();
     void synCamera();
     void checkState();
     void changeState(bool is_moving);
