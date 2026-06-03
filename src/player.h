@@ -11,6 +11,7 @@ class Timer;
 class Player : public Actor
 {
     Weapon* weapon_= nullptr;
+    Weapon* weapon2_ = nullptr;
     SpriteAnim* sprite_idle_ = nullptr;
     SpriteAnim* sprite_move_ = nullptr;
     Effect* effect_ = nullptr;  //player要保存成员变量是因为，特效在player死亡后调用，enemy是在创建之前
@@ -28,6 +29,8 @@ public:
     //getters and setters
     Weapon* getWeapon () { return weapon_; }
     void setWeapon (Weapon* weapon) { weapon_ = weapon; }
+    Weapon* getWeapon2 () { return weapon2_; }
+    void setWeapon2 (Weapon* weapon) { weapon2_ = weapon; }
 
 private:
     void autoEscape();

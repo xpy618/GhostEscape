@@ -45,8 +45,10 @@ void SceneMain::init()
     auto scene = Game::getInstance().getCurrentScene();
     auto pos = glm::vec2(Game::getInstance().getScreenSize().x - 300, 30);
     auto hud_skill_ = HUDSkill::addHUDSkillChild(scene, "assets/UI/Electric-Icon.png", pos, 0.14f, Anchor::CENTER);
+    auto hud_skill_2 = HUDSkill::addHUDSkillChild(scene, "assets/UI/Fire-Icon.png", pos + glm::vec2(-50.0f, 0.0f), 0.14f, Anchor::CENTER);
 
-    player_->getWeapon()->setHudSkill(hud_skill_);  //技能与武器绑定
+    player_->getWeapon()->setHudSkill(hud_skill_);  //技能图标与武器绑定
+    player_->getWeapon2()->setHudSkill(hud_skill_2);
 
     ui_mouse_ = UIMouse::addUIMouseChild(this,"assets/UI/29.png", "assets/UI/30.png", 1.0); //最后添加
 }
