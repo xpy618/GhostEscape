@@ -4,13 +4,13 @@
 #include "core/actor.h"
 #include "affiliate/sprite_anim.h"
 #include "world/effect.h"
-#include "weapon_thunder.h"
+#include "raw/weapon.h"
 #include "raw/move_control.h"
 
 class Timer;
 class Player : public Actor
 {
-    WeaponThunder* weapon_thunder_ = nullptr;
+    Weapon* weapon_= nullptr;
     SpriteAnim* sprite_idle_ = nullptr;
     SpriteAnim* sprite_move_ = nullptr;
     Effect* effect_ = nullptr;  //player要保存成员变量是因为，特效在player死亡后调用，enemy是在创建之前
@@ -24,6 +24,10 @@ public:
     virtual void clean () override;
 
     virtual void takeDamage (float damage) override;
+
+    //getters and setters
+    Weapon* getWeapon () { return weapon_; }
+    void setWeapon (Weapon* weapon) { weapon_ = weapon; }
 
 private:
     void autoEscape();

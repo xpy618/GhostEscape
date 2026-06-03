@@ -35,7 +35,7 @@ void Actor::setMoveControl(MoveControl *move_control)
         move_control_->setNeedRemove(true);
     }
     move_control_ = move_control;
-    move_control_->setParent(this);  //有疑问
+    move_control_->setParent(this);  //为了能让子类能够调用/修改父类
     safeAddChild(move_control_);
 }
 

@@ -5,6 +5,7 @@
 #include "raw/stats.h"
 #include "raw/timer.h"
 #include "affiliate/text_label.h"
+#include "world/spell.h"
 
 void Player::init()
 {
@@ -20,7 +21,12 @@ void Player::init()
     stats_ = Stats::addStatsChild(this);
     effect_ = Effect::addEffectChild(Game::getInstance().getCurrentScene(), "assets/effect/1764.png", glm::vec2(0), 2.0f);
     effect_->setActive(false);
-    weapon_thunder_ = WeaponThunder::addWeaponThunderChild(this, 2.0f, 40.0f);
+
+    weapon_= Weapon::addWeaponChild(this, 2.0f, 40.0f);
+    auto spell_prototype = Spell::addSpellChild(Game::getInstance().getCurrentScene(), "assets/effect/Thunderstrike w blur.png", glm::vec2(0), 40.0f, 3.0f, Anchor::CENTER);
+    spell_prototype->setActive(false);  //在场景中直接加入一个副本
+    weapon_->setSpellPrototype(spell_prototype);
+
     //TextLabel::addTextLabelChild(this, "老毛", "assets/font/VonwaonBitmap-16px.ttf", 16);
 
     setMoveControl(new MoveControl());

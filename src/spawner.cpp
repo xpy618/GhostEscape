@@ -16,10 +16,10 @@ void Spawner::update(float dt)
             auto pos = Game::getInstance().randomVec2(Game::getInstance().getCurrentScene()->getCameraPosition(), Game::getInstance().getCurrentScene()->getCameraPosition() + Game::getInstance().getScreenSize());
             Enemy* enemy = Enemy::addEnemyChild(nullptr, pos, target_);  //不在这里创enemy，在下面创
             Effect::addEffectChild(Game::getInstance().getCurrentScene(), "assets/effect/184_3.png", pos, 1.0f, enemy);
-            if (i==0) {
-                enemy->setMoveControl(new MoveControl());
-                target_->removeMoveControl();
-            }
+            // if (i==0) {
+            //     enemy->setMoveControl(new MoveControl());
+            //     target_->removeMoveControl();
+            // }
         }
     }
 }

@@ -34,7 +34,6 @@ add_executable(${TARGET}
                 src/player.cpp
                 src/enemy.cpp
                 src/spawner.cpp
-                src/weapon_thunder.cpp
                 src/screen/ui_mouse.cpp
                 src/screen/hud_stats.cpp
                 src/screen/hud_skill.cpp

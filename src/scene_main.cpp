@@ -7,6 +7,7 @@
 #include "screen/hud_stats.h"
 #include "screen/hud_text.h"
 #include "screen/hud_button.h"
+#include "screen/hud_skill.h"
 #include "world/spell.h"
 #include "world/effect.h"
 #include "raw/timer.h"
@@ -41,6 +42,12 @@ void SceneMain::init()
     hud_stats_ = HUDStats::addHUDStatsChild(this, player_, glm::vec2(30.0f));
     hud_text_score_ = HUDText::addHUDTextChild(this, "Store: 0", glm::vec2(Game::getInstance().getScreenSize().x - 120.f, 30.0f), glm::vec2(200, 50));
 
+    auto scene = Game::getInstance().getCurrentScene();
+    auto pos = glm::vec2(Game::getInstance().getScreenSize().x - 300, 30);
+    auto hud_skill_ = HUDSkill::addHUDSkillChild(scene, "assets/UI/Electric-Icon.png", pos, 0.14f, Anchor::CENTER);
+
+    player_->getWeapon()->setHudSkill(hud_skill_);  //技能与武器绑定
+
     ui_mouse_ = UIMouse::addUIMouseChild(this,"assets/UI/29.png", "assets/UI/30.png", 1.0); //最后添加
 }
 
@@ -52,7 +59,7 @@ bool SceneMain::handleEvents(SDL_Event& event)
 
 void SceneMain::update(float dt)
 {
-    checkTimeManage(dt);  //必修在update的开头
+    checkTimeManage(dt);  //必须在update的开头
     Scene::update(dt);
     updateScore();
     checkButtonPause();
@@ -131,7 +138,7 @@ void SceneMain::checkButtonBack()
 void SceneMain::checkEndTimer()
 {
     if (!end_timer_->timerOut()) return;
-    //pause();
+    pause();
     button_restart_->setRenderPosition(Game::getInstance().getScreenSize() / 2.0f - glm::vec2(200.0f, 0.0f));
     button_restart_->setScale(3.5f);
     button_back_->setRenderPosition(Game::getInstance().getScreenSize() / 2.0f + glm::vec2(200.0f, 0.0f));
