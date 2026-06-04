@@ -60,6 +60,9 @@ add_executable(${TARGET}
                 src/core/object_affiliate.cpp
                 src/core/game.cpp
                 src/core/object_world.cpp
+                src/button_state/button_normal.cpp
+                src/button_state/button_hover.cpp
+                src/button_state/button_press.cpp
                 resources.rc
                 )
 
