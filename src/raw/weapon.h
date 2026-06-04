@@ -3,6 +3,7 @@
 
 #include "../core/object.h"
 #include "../world/spell.h"
+#include "../raw/spell_creator.h"
 
 class Spell;
 class Actor;
@@ -11,7 +12,7 @@ class Weapon : public Object
 {
 protected:
     Actor* parent_ = nullptr;
-    Spell* spell_prototype_ = nullptr;  //用于clone
+    SpellCreator* spell_creator_ = nullptr;  
     SDL_MouseButtonFlags trigger_button_ = SDL_BUTTON_LEFT;
     HUDSkill* hud_skill_ = nullptr;
     std::string sound_path_ = "assets/sound/big-thunder.mp3";
@@ -34,8 +35,8 @@ public:
     Actor* getParent() const { return parent_; };
     void setParent(Actor* parent) { parent_ = parent; };
 
-    Spell* getSpellPrototype() const { return spell_prototype_; };
-    void setSpellPrototype(Spell* spell) { spell_prototype_ = spell; };
+    SpellCreator* getSpellCreator() const { return spell_creator_; };
+    void setSpellCreator(SpellCreator* spell_creator) { spell_creator_ = spell_creator; };
     SDL_MouseButtonFlags getTriggerButton() const { return trigger_button_; };
     void setTriggerButton(SDL_MouseButtonFlags trigger_button) { trigger_button_ = trigger_button; };
     HUDSkill* getHudSkill() const { return hud_skill_; };
