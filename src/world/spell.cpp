@@ -1,17 +1,19 @@
 #include "spell.h"
 #include "../core/scene.h"
 
-Spell *Spell::addSpellChild(Object *parent, const std::string &file_path, glm::vec2 &pos, float damage, float scale, Anchor anchor)
+Spell *Spell::addSpellChild(Object *parent, const std::string &file_path, glm::vec2 pos, float damage, float scale, Anchor anchor)
 {
     auto spell = new Spell();
+    spell->setFilepath(file_path);
+    spell->setScale(scale);
     spell->init();
-    spell->damage_ = damage;
+    spell->setDamage(damage);
     spell->sprite_ = SpriteAnim::addSpriteAnimChild(spell, file_path, scale, anchor);  //对象->组件->方法
     auto size = spell->sprite_->getSize();
     spell->collider_ = Collider::addColliderChild(spell, size, Collider::Type::CIRCLE, anchor);
     spell->sprite_->setLoop(false);
     spell->setPosition(pos);
-    if (parent) parent->addChild(spell);
+    if (parent) parent->safeAddChild(spell);
     return spell;
 }
 
@@ -22,9 +24,14 @@ void Spell::update(float dt)
     attack();
 }
 
+Spell *Spell::clone()
+{
+    return Spell::addSpellChild(Game::getInstance().getCurrentScene(), file_path_, getPosition(), damage_, scale_, sprite_->getAnchor());
+}
+
 void Spell::attack()
 {
-    auto objects = game.getCurrentScene()->getChildrenWorld();
+    auto objects = Game::getInstance().getCurrentScene()->getChildrenWorld();
     for (auto& object : objects)
     {
         if (object->getType() != ObjectType::ENEMY) continue;

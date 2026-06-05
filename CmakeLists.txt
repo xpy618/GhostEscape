@@ -34,16 +34,18 @@ add_executable(${TARGET}
                 src/player.cpp
                 src/enemy.cpp
                 src/spawner.cpp
-                src/weapon_thunder.cpp
                 src/screen/ui_mouse.cpp
                 src/screen/hud_stats.cpp
                 src/screen/hud_skill.cpp
                 src/screen/hud_text.cpp
                 src/screen/hud_button.cpp
+                src/raw/move_control.cpp
                 src/raw/stats.cpp
                 src/raw/weapon.cpp
                 src/raw/timer.cpp
                 src/raw/bg_star.cpp
+                src/raw/spell_thunder.cpp
+                src/raw/spell_fire.cpp
                 src/world/effect.cpp
                 src/world/spell.cpp
                 src/affiliate/sprite_anim.cpp
@@ -58,6 +60,9 @@ add_executable(${TARGET}
                 src/core/object_affiliate.cpp
                 src/core/game.cpp
                 src/core/object_world.cpp
+                src/button_state/button_normal.cpp
+                src/button_state/button_hover.cpp
+                src/button_state/button_press.cpp
                 resources.rc
                 )
 

@@ -5,7 +5,7 @@ void Collider::render()
 #ifdef DEBUG_MODE
     ObjectAffiliate::render();
     auto pos = parent_->getRenderPosition() + offset_;
-    game.renderFillCircle(pos, size_, 0.3f); 
+    Game::getInstance().renderFillCircle(pos, size_, 0.3f); 
 #endif
 }
 

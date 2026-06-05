@@ -119,20 +119,20 @@ void Scene::removeChild(Object *child)
 void Scene::pause()
 {
     is_pause_ = true;
-    game.pauseMusic();
-    game.pauseSound();
+    Game::getInstance().pauseMusic();
+    Game::getInstance().pauseSound();
 }
 
 void Scene::resume()
 {
     is_pause_ = false;
-    game.resumeMusic();
-    game.resumeSound();
+    Game::getInstance().resumeMusic();
+    Game::getInstance().resumeSound();
 
 }
 
 void Scene::setCameraPosition(glm::vec2 camera_position)
 {
     camera_position_ = camera_position;
-    camera_position_ = glm::clamp(camera_position_, glm::vec2(-30.0f), world_size_ - game.getScreenSize() + glm::vec2(30.0f));
+    camera_position_ = glm::clamp(camera_position_, glm::vec2(-30.0f), world_size_ - Game::getInstance().getScreenSize() + glm::vec2(30.0f));
 }

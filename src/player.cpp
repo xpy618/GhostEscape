@@ -5,6 +5,9 @@
 #include "raw/stats.h"
 #include "raw/timer.h"
 #include "affiliate/text_label.h"
+#include "world/spell.h"
+#include "raw/spell_thunder.h"
+#include "raw/spell_fire.h"
 
 void Player::init()
 {
@@ -18,10 +21,26 @@ void Player::init()
 
     collider_ = Collider::addColliderChild(this, sprite_idle_->getSize()/2.0f);
     stats_ = Stats::addStatsChild(this);
-    effect_ = Effect::addEffectChild(game.getCurrentScene(), "assets/effect/1764.png", glm::vec2(0), 2.0f);
+    effect_ = Effect::addEffectChild(Game::getInstance().getCurrentScene(), "assets/effect/1764.png", glm::vec2(0), 2.0f);
     effect_->setActive(false);
-    weapon_thunder_ = WeaponThunder::addWeaponThunderChild(this, 2.0f, 40.0f);
+
+    weapon_= Weapon::addWeaponChild(this, 2.0f, 40.0f);
+    auto thunder_creator = new SpellThunder();
+    thunder_creator->init();
+    weapon_->setSpellCreator(thunder_creator);
+    weapon_->addChild(thunder_creator);  
+
+    weapon2_= Weapon::addWeaponChild(this, 0.5f, 5.0f);
+    auto fire_creator = new SpellFire();
+    fire_creator->init();
+    weapon2_->setSpellCreator(fire_creator);
+    weapon2_->addChild(fire_creator);
+    weapon2_->setSoundPath("assets/sound/fire-magic-6947.mp3");
+    weapon2_->setTriggerButton(SDL_BUTTON_RIGHT);
+
     //TextLabel::addTextLabelChild(this, "老毛", "assets/font/VonwaonBitmap-16px.ttf", 16);
+
+    setMoveControl(new MoveControl());
 }
 
 bool Player::handleEvents(SDL_Event& event)
@@ -33,7 +52,7 @@ bool Player::handleEvents(SDL_Event& event)
 void Player::update(float dt)
 {
    Actor::update(dt);
-   keyboardControl(); 
+   if (!move_control_) autoEscape();
    checkState();
    move(dt);
    synCamera();
@@ -55,37 +74,18 @@ void Player::takeDamage(float damage)
 {
     if(!stats_ || stats_->getInvincible()) return;
     Actor::takeDamage(damage);
-    game.playSound("assets/sound/hit-flesh-02-266309.mp3");
+    Game::getInstance().playSound("assets/sound/hit-flesh-02-266309.mp3");
 }
 
-void Player::keyboardControl()
+void Player::autoEscape()
 {
-    auto currentKeyStates = SDL_GetKeyboardState(NULL);
-
-    velocity_ *= 0.9f; //惯性减速
-
-    if (currentKeyStates[SDL_SCANCODE_W])
-    {
-        velocity_.y = -max_speed_;
-    }
-    if (currentKeyStates[SDL_SCANCODE_S])
-    {
-        velocity_.y = max_speed_;
-    }
-    if (currentKeyStates[SDL_SCANCODE_A])
-    {
-        velocity_.x = -max_speed_;
-    }
-    if (currentKeyStates[SDL_SCANCODE_D])
-    {
-        velocity_.x = max_speed_;
-    }
-
+    velocity_ = glm::vec2(0);
+    //todo
 }
 
 void Player::synCamera()
 {
-    game.getCurrentScene()->setCameraPosition(position_ - game.getScreenSize() / 2.0f);
+    Game::getInstance().getCurrentScene()->setCameraPosition(position_ - Game::getInstance().getScreenSize() / 2.0f);
 }
 
 void Player::checkState()
@@ -125,6 +125,6 @@ void Player::checkIsDead()
         effect_->setActive(true);
         effect_->setPosition(position_);
         setActive(false);
-        game.playSound("assets/sound/female-scream-02-89290.mp3");
+        Game::getInstance().playSound("assets/sound/female-scream-02-89290.mp3");
     }
 }

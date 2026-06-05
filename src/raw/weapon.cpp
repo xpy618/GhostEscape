@@ -3,22 +3,46 @@
 #include "../world/spell.h"
 #include "../core/scene.h"
 #include "stats.h"
+#include "../screen/hud_skill.h"
 
+Weapon *Weapon::addWeaponChild(Actor *parent, float cool_down, float mana_cost)
+{
+    auto weapon = new Weapon();
+    weapon->init();
+    weapon->setParent(parent);
+    weapon->setCoolDown(cool_down);
+    weapon->setManaCost(mana_cost);
+    parent->addChild(weapon);
+    return weapon;
+}
+
+bool Weapon::handleEvents(SDL_Event &event)
+{
+    if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN){
+        if (event.button.button == trigger_button_){
+            auto pos = Game::getInstance().getMousePosition() + Game::getInstance().getCurrentScene()->getCameraPosition();
+            attack(pos);
+            return true;
+        }
+    }
+    return false;
+}
 
 void Weapon::update(float dt)
 {
     Object::update(dt);
     cool_down_timer_ += dt;
+    if(hud_skill_) hud_skill_->setPercentage(cool_down_timer_/cool_down_);
 }
 
-void Weapon::attack(glm::vec2 position, Spell* spell)
+void Weapon::attack(glm::vec2 position)
 {
-    
+    if (!spell_creator_ || !canAttack()) return;
+    Game::getInstance().playSound(sound_path_);
     parent_->getStats()->useMana(mana_cost_);
     cool_down_timer_ = 0.0f;
+    auto spell = spell_creator_->createSpell();  //工厂模式创建法术
     spell->setPosition(position);
-    game.getCurrentScene()->safeAddChild(spell); //因为是游戏运行时添加的，所以必须使用safeaddchild
-    
 }
 
 bool Weapon::canAttack()

@@ -12,7 +12,7 @@ void Actor::update(float dt)
 void Actor::move(float dt)
 {
     setPosition(getPosition() + velocity_ * dt);
-    position_ = glm::clamp(position_, glm::vec2(0.0f), game.getCurrentScene()->getWorldSize() );//限制移动范围
+    position_ = glm::clamp(position_, glm::vec2(0.0f), Game::getInstance().getCurrentScene()->getWorldSize() );//限制移动范围
 }
 
 void Actor::takeDamage(float damage)
@@ -20,6 +20,23 @@ void Actor::takeDamage(float damage)
     if (stats_) {
         stats_->takeDamage(damage);
     }
+}
+
+void Actor::removeMoveControl()
+{
+    if( !move_control_ ) return;
+    move_control_->setNeedRemove(true);
+    move_control_ = nullptr;
+}
+
+void Actor::setMoveControl(MoveControl *move_control)
+{
+    if (move_control_){
+        move_control_->setNeedRemove(true);
+    }
+    move_control_ = move_control;
+    move_control_->setParent(this);  //为了能让子类能够调用/修改父类
+    safeAddChild(move_control_);
 }
 
 bool Actor::getIsAlive()

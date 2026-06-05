@@ -2,13 +2,14 @@
 #define ACTOR_H
 
 #include "object_world.h"
-#include <glm/glm.hpp>
+#include "../raw/move_control.h"
 
 class Stats;
 class AffiliateBar;
 class Actor : public ObjectWorld 
 {
 protected:
+    MoveControl* move_control_ = nullptr;
     Stats* stats_ = nullptr;
     AffiliateBar* health_bar_ = nullptr;
     glm::vec2 velocity_ = glm::vec2(0, 0);
@@ -18,8 +19,12 @@ public:
     virtual void update(float dt) override;
     void move(float dt);
     virtual void takeDamage(float damage) override;
+
+    void removeMoveControl();
     
     //getters and setters
+    MoveControl* getMoveControl() const { return move_control_; }
+    void setMoveControl(MoveControl* move_control);
     glm::vec2 getVelocity() const { return velocity_; }
     void setVelocity(const glm::vec2& velocity) { velocity_ = velocity; }
     float getMaxSpeed() const { return max_speed_; }

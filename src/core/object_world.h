@@ -13,6 +13,9 @@ protected:
 public:
     virtual void init() override { type_ = ObjectType::OBJECT_WORLD; }
     virtual void update(float dt) override;
+
+    virtual ObjectWorld* clone() { return nullptr; }  //默认不支持克隆，子类需要克隆的话重写这个方法
+
     virtual void takeDamage(float) {return;};
     
     //getters and setters

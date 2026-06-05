@@ -38,12 +38,22 @@ void Enemy::update(float dt)
 {
     Actor::update(dt);
     if (target_->getActive()){
-        aimTarget(target_);
+        if(!move_control_)aimTarget(target_);
         move(dt); 
         attack();
     }
     checkState();
     remove();
+}
+
+void Enemy::render()
+{
+    auto render_pos_start = getRenderPosition() + current_anim_->getOffset();  //=top_left
+    auto render_pos_end = render_pos_start + current_anim_->getSize();        //=bottom_right
+    if (!Game::getInstance().isRectCollideRect(render_pos_start, render_pos_end, glm::vec2(0), Game::getInstance().getScreenSize())){
+        return;
+    }
+    Actor::render();
 }
 
 void Enemy::aimTarget(Player *target)
@@ -80,7 +90,7 @@ void Enemy::changeState(State new_state)
         case State::DIE:
             current_anim_ = anim_die_;
             current_anim_->setActive(true);
-            game.addScore(score_);
+            Game::getInstance().addScore(score_);
             break;
     }
     current_state_ = new_state;

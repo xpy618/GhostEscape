@@ -231,6 +231,23 @@ std::string Game::loadTextFile(const std::string &path)
     return text;
 }
 
+bool Game::isRectCollideRect(const glm::vec2 &rect1_top_left, const glm::vec2 &rect1_bottom_right, const glm::vec2 &rect2_top_left, const glm::vec2 &rect2_bottom_right)
+{
+    //AABB碰撞检测
+    if (rect1_top_left.x > rect2_bottom_right.x || rect1_bottom_right.x < rect2_top_left.x || rect1_top_left.y > rect2_bottom_right.y || rect1_bottom_right.y < rect2_top_left.y){
+        return false;
+    }
+    return true;
+}
+
+bool Game::isRectInRect(const glm::vec2 &rect1_top_left, const glm::vec2 &rect1_bottom_right, const glm::vec2 &rect2_top_left, const glm::vec2 &rect2_bottom_right)
+{
+    if (rect1_top_left.x > rect2_top_left.x && rect1_bottom_right.x < rect2_bottom_right.x && rect1_top_left.y > rect2_top_left.y && rect1_bottom_right.y < rect2_bottom_right.y){
+        return true;
+    }
+    return false;
+}
+
 void Game::updateMouse()
 {
     mouse_button_ = SDL_GetMouseState(&mouse_pos_.x, &mouse_pos_.y);
@@ -244,10 +261,10 @@ void Game::updateMouse()
 void Game::drawGrid(const glm::vec2 &top_left, const glm::vec2 bottom_right, float grid_size, SDL_FColor fcolor)
 {
     SDL_SetRenderDrawColorFloat(renderer_, fcolor.r, fcolor.g, fcolor.b, fcolor.a);
-    for (float i = top_left.x; i < bottom_right.x; i += grid_size){
+    for (float i = glm::mod(top_left.x, grid_size); i < screen_size_.x; i += grid_size){
         SDL_RenderLine(renderer_, i, top_left.y, i, bottom_right.y); //SDL_RenderLine(渲染器, 起点x, 起点y, 终点x, 终点y);
     }
-    for (float i = top_left.y; i < bottom_right.y; i += grid_size){
+    for (float i = glm::mod(top_left.y, grid_size); i < screen_size_.y; i += grid_size){
         SDL_RenderLine(renderer_, top_left.x, i, bottom_right.x, i);
     }
     SDL_SetRenderDrawColorFloat(renderer_, 0, 0, 0, 1);
@@ -255,6 +272,10 @@ void Game::drawGrid(const glm::vec2 &top_left, const glm::vec2 bottom_right, flo
 
 void Game::drawBoundary(const glm::vec2 &top_left, const glm::vec2 bottom_right, float boundary_size, SDL_FColor fcolor)
 {
+    if (!isRectCollideRect(top_left - glm::vec2(boundary_size), bottom_right + glm::vec2(boundary_size), glm::vec2(0), screen_size_) ||  //碰撞检测用外边框，包含检测用内边框
+        isRectInRect(glm::vec2(0), screen_size_, top_left, bottom_right)){                                                               //取非时注意修改与或逻辑
+        return;
+    }
     SDL_SetRenderDrawColorFloat(renderer_, fcolor.r, fcolor.g, fcolor.b, fcolor.a);
     for (float i =0; i < boundary_size; i++){
         SDL_FRect rect = {
