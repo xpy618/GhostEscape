@@ -27,6 +27,8 @@ public:
     static Enemy* addEnemyChild(ObjectScreen* parent, glm::vec2 pos, Player* target);
     virtual void init() override;
     virtual void update(float dt) override;
+    virtual void render() override;  //超出屏幕不绘制
+
     void aimTarget(Player* target);
 
     void checkState();

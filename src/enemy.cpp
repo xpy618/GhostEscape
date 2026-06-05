@@ -46,6 +46,16 @@ void Enemy::update(float dt)
     remove();
 }
 
+void Enemy::render()
+{
+    auto render_pos_start = getRenderPosition() + current_anim_->getOffset();  //=top_left
+    auto render_pos_end = render_pos_start + current_anim_->getSize();        //=bottom_right
+    if (!Game::getInstance().isRectCollideRect(render_pos_start, render_pos_end, glm::vec2(0), Game::getInstance().getScreenSize())){
+        return;
+    }
+    Actor::render();
+}
+
 void Enemy::aimTarget(Player *target)
 {
     if (target == nullptr) return;
